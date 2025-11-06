@@ -9,8 +9,7 @@ jobs:
   build-and-deploy:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    environment:
-      name: kubernetespractise
+    environment: kubernetespractise
       
     steps:
     # Step 1: Check out the repository
