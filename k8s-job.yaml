@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: playwright-tests
+spec:
+  completions: 2 # Number of nodes (e.g., node1 and node2)
+  parallelism: 2 # Run tests in parallel
+  template:
+    spec:
+      containers:
+      - name: playwright-tests
+        image: <your-dockerhub-username>/playwright-tests:latest
+        command: ["npx", "playwright", "test", "--grep", "^((1[0-9])|[1-9])$"]
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      restartPolicy: Never
