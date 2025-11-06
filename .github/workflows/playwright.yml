@@ -7,11 +7,11 @@ on:
 
 jobs:
   build-and-deploy:
-    environment:
-      name: kubernetespractise
     timeout-minutes: 60
     runs-on: ubuntu-latest
-
+    environment:
+      name: kubernetespractise
+      
     steps:
     # Step 1: Check out the repository
     - uses: actions/checkout@v4
