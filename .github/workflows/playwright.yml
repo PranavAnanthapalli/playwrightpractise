@@ -7,7 +7,8 @@ on:
 
 jobs:
   build-and-deploy:
-    environment: kubernetespractise
+    environment:
+      name: kubernetespractise
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
