@@ -33,16 +33,27 @@ jobs:
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/playwright-tests:latest
 
-    # Step 3: Set up kubectl
+    # Step 3: Azure Login
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Step 4: Set up kubectl and connect to AKS
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
       with:
         version: 'latest'
 
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
+
+    # Step 5: Deploy to Kubernetes
     - name: Deploy to Kubernetes
       run: kubectl apply -f k8s-job.yaml
 
-    # Step 4: Monitor Kubernetes job
+    # Step 6: Monitor Kubernetes job
     - name: Wait for job completion
       run: |
         kubectl wait --for=condition=complete job/playwright-tests --timeout=600s
