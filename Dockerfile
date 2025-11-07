@@ -16,16 +16,25 @@ RUN apt-get update && apt-get install -y \
     libgbm1 \
     libxss1 \
     libasound2 \
+    libx11-xcb1 \
+    libxcursor1 \
+    libxfixes3 \
+    libgtk-3-0 \
+    libgdk-pixbuf2.0-0 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libgstreamer1.0-0 \
+    libgstreamer-plugins-base1.0-0 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-# Install dependencies (this will install Playwright 1.56.1 from your package.json)
 RUN npm ci
 
-# Install browsers
+# Install Playwright browsers
 RUN npx playwright install
 
 COPY . .
