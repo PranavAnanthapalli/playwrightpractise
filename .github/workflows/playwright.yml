@@ -45,6 +45,14 @@ jobs:
       run: |
         az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
 
+    - name: Clean up previous job
+      run: |
+        kubectl delete job playwright-tests --ignore-not-found=true
+        echo "Previous job deleted"
+        # Also clean up any leftover pods
+        kubectl delete pods -l job-name=playwright-tests --ignore-not-found=true
+        sleep 5  # Wait for cleanup
+
     # Deploy with template replacement
     - name: Deploy to Kubernetes
       run: |
