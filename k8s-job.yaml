@@ -10,7 +10,7 @@ spec:
       containers:
       - name: playwright-tests
         image: <your-dockerhub-username>/playwright-tests:latest
-        command: ["npx", "playwright", "test", "--grep", "^((1[0-9])|[1-9])$"]
+        command: ["npx", "playwright", "test"]
         resources:
           limits:
             memory: "512Mi"
