@@ -10,9 +10,6 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm ci
 
-# Install Playwright browsers
-RUN npx playwright install --with-deps
-
 # Copy the rest of the application
 COPY . .
 
