@@ -48,8 +48,30 @@ jobs:
     # Deploy with template replacement
     - name: Deploy to Kubernetes
       run: |
-        sed "s|<your-dockerhub-username>|${{ secrets.DOCKER_USERNAME }}|g" k8s-job.yaml | kubectl apply -f -
-
+        sed "s|<your-dockerhub-username>|${{ secrets.DOCKER_USERNAME }}|g" k8s-job.yaml | kubectl apply -f -    
+        
+    - name: Debug Job Status
+      run: |
+        echo "=== Checking Job Details ==="
+        kubectl get job playwright-tests -o yaml
+    
+        echo "=== Checking Pods ==="
+        kubectl get pods -l job-name=playwright-tests -o wide
+    
+        echo "=== Pod Details (if any) ==="
+        POD_NAME=$(kubectl get pods -l job-name=playwright-tests -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "NO_POD")
+        if [ "$POD_NAME" != "NO_POD" ]; then
+          echo "Pod found: $POD_NAME"
+          kubectl describe pod $POD_NAME
+          echo "=== Pod Logs ==="
+          kubectl logs $POD_NAME || echo "No logs available yet"
+        else
+          echo "No pods found for the job"
+        fi
+    
+        echo "=== Cluster Events ==="
+        kubectl get events --sort-by='.lastTimestamp' --field-selector involvedObject.kind=Pod | tail -20
+        
     - name: Wait for job completion
       run: |
         kubectl wait --for=condition=complete job/playwright-tests --timeout=600s
