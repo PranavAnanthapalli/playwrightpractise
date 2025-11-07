@@ -72,8 +72,11 @@ const BASE_URL = "https://automationexercise.com/";
 test.describe("AutomationExercise Test Suite", () => {
 
   // 1) Invalid login (your test)
-  test("Invalid Login - error validation", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("1: Invalid Login - error validation", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: 'Signup / Login' }).click();
     await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').fill('pdsa@gmail.com');
     await page.getByRole('textbox', { name: 'Password' }).fill('sdasd');
@@ -82,33 +85,48 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 2) Home page title verification
-  test("Home page title should match", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("2: Home page title should match", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await expect(page).toHaveTitle(/Automation Exercise/);
   });
 
   // 3) Validate navigation to Products Page
-  test("Navigate to Products Page", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("3: Navigate to Products Page", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole("link", { name: "Products" }).click();
     await expect(page.locator("h2.title")).toContainText("All Products");
   });
 
   // 4) Validate subscription text in footer
-  test("Validate subscription section exists", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("4: Validate subscription section exists", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await expect(page.locator('div').filter({ hasText: 'Subscription Get the most' }).nth(3)).toBeVisible();
   });
 
   // 5) Subscribe using email
-  test("Validate Feature Items is visible", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("5: Validate Feature Items is visible", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await expect(page.getByRole('heading', { name: 'Features Items' })).toBeVisible();
   });
 
   // 6) Search for product
-  test("Search product by name", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("6: Search product by name", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Products' }).click();
     await page.getByRole('textbox', { name: 'Search Product' }).click();
     await page.getByRole('textbox', { name: 'Search Product' }).fill('tshirts');
@@ -117,8 +135,11 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 7) Add a product to cart
-  test("Add product to cart", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("7: Add product to cart", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' View Product' }).nth(1).click();
     await page.getByRole('button', { name: ' Add to cart' }).click();
     await page.getByRole('link', { name: 'View Cart' }).click();
@@ -126,8 +147,11 @@ test.describe("AutomationExercise Test Suite", () => {
 });
 
   // 8) Remove product from cart
-  test("Remove product from cart", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("8: Remove product from cart", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' View Product' }).first().click();
     await page.getByRole('button', { name: ' Add to cart' }).click();
     await page.getByRole('link', { name: 'View Cart' }).click();
@@ -136,8 +160,11 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 9) Contact Us Form - validation
-  test("Contact form submission", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("9: Contact form submission", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Contact us' }).click();
     await page.getByRole('textbox', { name: 'Name' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('prav');
@@ -161,14 +188,20 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 10) Scroll to bottom and verify footer
-  test("Scroll to bottom and validate footer visibility", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("10: Scroll to bottom and validate footer visibility", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await expect(page.locator('#footer')).toBeVisible();
   });
 
   // 11) Navigate using top menu "Test Cases"
-  test("Validate Test Cases menu", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("11: Validate Test Cases menu", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Test Cases' }).click();
     await expect(page.locator('b')).toBeVisible();
     await expect(page.getByText('Below is the list of test')).toBeVisible();
@@ -176,16 +209,22 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 12) Validate Category filtering
-  test("Filter by Women Category", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("12: Filter by Women Category", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Women' }).click();
     await page.getByRole('link', { name: 'Dress' }).click();
     await expect(page.getByRole('heading', { name: 'Women - Dress Products' })).toBeVisible();
   });
 
   // 13) Validate Brand filtering
-  test("Filter by Brands", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("13: Filter by Brands", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Products' }).click();
     await page.getByRole('link', { name: '(6) Polo' }).click();
     await expect(page.getByText('Polo', { exact: true })).toBeVisible();
@@ -193,16 +232,22 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 14) Validate product details page
-  test("Product details validation", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("14: Product details validation", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole("link", { name: "Products" }).click();
     await page.locator(".choose a").first().click();
     await expect(page.locator(".product-information")).toContainText("Availability");
   });
 
   // 15) Increase quantity then add to cart
-  test("Increase quantity and add to cart", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("15: Increase quantity and add to cart", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Products' }).click();
     await page.getByRole('link', { name: ' View Product' }).first().click();
     await expect(page.locator('#quantity')).toHaveValue('1');
@@ -214,15 +259,21 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 16) Validate "Recommended Items" section is visible
-  test("Recommended Items visible", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("16: Recommended Items visible", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.locator("#recommended-item-carousel").scrollIntoViewIfNeeded();
     await expect(page.getByText("RECOMMENDED ITEMS")).toBeVisible();
   });
 
   // 17) Validate signup page elements
-  test("Validate Signup page UI elements", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("17: Validate Signup page UI elements", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Signup / Login' }).click();
     await expect(page.getByRole('heading', { name: 'New User Signup!' })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'Name' })).toBeEmpty();
@@ -232,9 +283,12 @@ test.describe("AutomationExercise Test Suite", () => {
 
 
   // 18) Signup with random email (unique every run)
-  test("Signup new user", async ({ page }) => {
+  test("18: Signup new user", async ({ page }) => {
     const random = Date.now();
-    await page.goto(BASE_URL);
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Signup / Login' }).click();
     await page.getByRole('textbox', { name: 'Name' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('test123');
@@ -245,15 +299,21 @@ test.describe("AutomationExercise Test Suite", () => {
   });
 
   // 19) Logout after signup (only checks UI)
-  test("Logout from application", async ({ page }) => {
-    await page.goto(BASE_URL);
+  test("19: Logout from application", async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole("link", { name: "Signup / Login" }).click();
     await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
   });
 
   // 20) Full E2E Test: Add to cart, checkout, login, place order
-  test('E2E Test for Adding Product to Cart', async ({ page }) => {
-    await page.goto('https://automationexercise.com/');
+  test('20: E2E Test for Adding Product to Cart', async ({ page }) => {
+    await page.goto(BASE_URL, { 
+    waitUntil: 'networkidle', // Wait for network to be idle
+    timeout: 60000 
+});
     await page.getByRole('link', { name: ' Products' }).click();
     await page.getByRole('link', { name: ' View Product' }).nth(1).click();
     await page.getByRole('button', { name: ' Add to cart' }).click();
