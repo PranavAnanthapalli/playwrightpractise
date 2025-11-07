@@ -1,17 +1,33 @@
-# Use the updated Playwright image that matches your version
-FROM mcr.microsoft.com/playwright:v1.56.1-focal
+FROM node:18-bullseye
 
-# Set the working directory
+# Install Playwright dependencies
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libdbus-1-3 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libxss1 \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install dependencies (this will install Playwright 1.56.1 from your package.json)
 RUN npm ci
 
-# Copy the rest of the application
+# Install browsers
+RUN npx playwright install
+
 COPY . .
 
-# Set the command to run Playwright tests
 CMD ["npx", "playwright", "test"]
