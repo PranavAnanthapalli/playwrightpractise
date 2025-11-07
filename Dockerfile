@@ -1,5 +1,5 @@
-# Use the official Node.js image as the base
-FROM mcr.microsoft.com/playwright:v1.39.0-focal
+# Use the updated Playwright image that matches your version
+FROM mcr.microsoft.com/playwright:v1.56.1-focal
 
 # Set the working directory
 WORKDIR /app
