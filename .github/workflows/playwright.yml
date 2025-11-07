@@ -2,8 +2,8 @@ name: Playwright Tests
 
 on:
   schedule:
-    - cron: "*/30 * * * *" # Run every 30 minutes
-  workflow_dispatch: # Allow manual triggering of the workflow
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -12,10 +12,9 @@ jobs:
     environment: kubernetespractise
       
     steps:
-    # Step 1: Check out the repository
     - uses: actions/checkout@v4
 
-    # Step 2: Set up Docker
+    # Docker steps (keep your existing ones)
     - name: Debug secrets existence
       run: |
         if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then echo "❌ Username secret missing"; else echo "✅ Username exists"; fi
@@ -33,27 +32,24 @@ jobs:
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/playwright-tests:latest
 
-    # Step 3: Azure Login
+    # Azure authentication
     - name: Login to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # Step 4: Set up kubectl and connect to AKS
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
-      with:
-        version: 'latest'
 
     - name: Get AKS credentials
       run: |
         az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
 
-    # Step 5: Deploy to Kubernetes
+    # Deploy with template replacement
     - name: Deploy to Kubernetes
-      run: kubectl apply -f k8s-job.yaml
+      run: |
+        sed "s|<your-dockerhub-username>|${{ secrets.DOCKER_USERNAME }}|g" k8s-job.yaml | kubectl apply -f -
 
-    # Step 6: Monitor Kubernetes job
     - name: Wait for job completion
       run: |
         kubectl wait --for=condition=complete job/playwright-tests --timeout=600s
