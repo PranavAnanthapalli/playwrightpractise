@@ -32,57 +32,57 @@ jobs:
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/playwright-tests:latest
 
-    # Azure authentication
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    # # Azure authentication
+    # - name: Login to Azure
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
+    # - name: Set up kubectl
+    #   uses: azure/setup-kubectl@v3
 
-    - name: Get AKS credentials
-      run: |
-        az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
+    # - name: Get AKS credentials
+    #   run: |
+    #     az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
 
-    - name: Clean up previous job
-      run: |
-        kubectl delete job playwright-tests --ignore-not-found=true
-        echo "Previous job deleted"
-        # Also clean up any leftover pods
-        kubectl delete pods -l job-name=playwright-tests --ignore-not-found=true
-        sleep 5  # Wait for cleanup
+    # - name: Clean up previous job
+    #   run: |
+    #     kubectl delete job playwright-tests --ignore-not-found=true
+    #     echo "Previous job deleted"
+    #     # Also clean up any leftover pods
+    #     kubectl delete pods -l job-name=playwright-tests --ignore-not-found=true
+    #     sleep 5  # Wait for cleanup
 
-    # Deploy with template replacement
-    - name: Deploy to Kubernetes
-      run: |
-        sed "s|<your-dockerhub-username>|${{ secrets.DOCKER_USERNAME }}|g" k8s-job.yaml | kubectl apply -f -    
+    # # Deploy with template replacement
+    # - name: Deploy to Kubernetes
+    #   run: |
+    #     sed "s|<your-dockerhub-username>|${{ secrets.DOCKER_USERNAME }}|g" k8s-job.yaml | kubectl apply -f -    
         
-    - name: Debug Job Status
-      run: |
-        echo "=== Checking Job Details ==="
-        kubectl get job playwright-tests -o yaml
+    # - name: Debug Job Status
+    #   run: |
+    #     echo "=== Checking Job Details ==="
+    #     kubectl get job playwright-tests -o yaml
     
-        echo "=== Checking Pods ==="
-        kubectl get pods -l job-name=playwright-tests -o wide
+    #     echo "=== Checking Pods ==="
+    #     kubectl get pods -l job-name=playwright-tests -o wide
     
-        echo "=== Pod Details (if any) ==="
-        POD_NAME=$(kubectl get pods -l job-name=playwright-tests -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "NO_POD")
-        if [ "$POD_NAME" != "NO_POD" ]; then
-          echo "Pod found: $POD_NAME"
-          kubectl describe pod $POD_NAME
-          echo "=== Pod Logs ==="
-          kubectl logs $POD_NAME || echo "No logs available yet"
-        else
-          echo "No pods found for the job"
-        fi
+    #     echo "=== Pod Details (if any) ==="
+    #     POD_NAME=$(kubectl get pods -l job-name=playwright-tests -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "NO_POD")
+    #     if [ "$POD_NAME" != "NO_POD" ]; then
+    #       echo "Pod found: $POD_NAME"
+    #       kubectl describe pod $POD_NAME
+    #       echo "=== Pod Logs ==="
+    #       kubectl logs $POD_NAME || echo "No logs available yet"
+    #     else
+    #       echo "No pods found for the job"
+    #     fi
     
-        echo "=== Cluster Events ==="
-        kubectl get events --sort-by='.lastTimestamp' --field-selector involvedObject.kind=Pod | tail -20
+    #     echo "=== Cluster Events ==="
+    #     kubectl get events --sort-by='.lastTimestamp' --field-selector involvedObject.kind=Pod | tail -20
         
-    - name: Wait for job completion
-      run: |
-        kubectl wait --for=condition=complete job/playwright-tests --timeout=600s
+    # - name: Wait for job completion
+    #   run: |
+    #     kubectl wait --for=condition=complete job/playwright-tests --timeout=600s
 
-    - name: Get logs
-      run: kubectl logs -l job-name=playwright-tests
+    # - name: Get logs
+    #   run: kubectl logs -l job-name=playwright-tests
