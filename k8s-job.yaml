@@ -10,9 +10,16 @@ spec:
       containers:
       - name: playwright-tests
         image: <your-dockerhub-username>/playwright-tests:latest
-        command: ["npx", "playwright", "test"]
+        imagePullPolicy: IfNotPresent
+        command: 
+          - "npx"
+          - "playwright"
+          - "test"
+          - "--project=chromium"           # ← CRITICAL: Run only Chromium
+          - "--timeout=60000"
         resources:
           limits:
-            memory: "1Gi"
-            cpu: "800m"
+            memory: "1.5Gi"    # Increase memory
+            cpu: "1000m"       # Full CPU
       restartPolicy: Never
+  activeDeadlineSeconds: 600   # 10 minute max
