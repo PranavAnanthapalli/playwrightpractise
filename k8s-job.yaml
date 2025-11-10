@@ -10,7 +10,7 @@ spec:
       containers:
       - name: playwright-tests
         image: <your-dockerhub-username>/playwright-tests:latest
-        command: ["npx", "playwright", "test", "--project=chromium,firefox"]
+        command: ["npx", "playwright", "test"]
         resources:
           limits:
             memory: "1Gi"
