@@ -87,31 +87,55 @@ jobs:
     - name: Get logs
       run: kubectl logs -l job-name=playwright-tests
 
-    - name: Extract test reports
+    - name: Extract test reports from pod
       if: always()
       run: |
-        echo "=== Searching for test reports in pod ==="
-        POD_NAME=$(kubectl get pods -l job-name=playwright-tests -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "NO_POD")
+        echo "=== Extracting test reports ==="
+        POD_NAME=$(kubectl get pods -l job-name=playwright-tests --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}' 2>/dev/null || echo "NO_POD")
         
         if [ "$POD_NAME" != "NO_POD" ]; then
           echo "Found pod: $POD_NAME"
           
-          # Check what report directories exist in the pod
-          echo "=== Checking for report directories ==="
-          kubectl exec $POD_NAME -- ls -la /app/ | grep -E "playwright|report|test" || echo "No report directories found"
+          # Create directory for reports
+          mkdir -p playwright-report
           
-          # Try to copy HTML report (if it exists)
-          echo "=== Attempting to copy HTML report ==="
-          kubectl cp $POD_NAME:/app/playwright-report/ ./playwright-report/ 2>/dev/null && echo "✅ HTML report copied" || echo "❌ HTML report not found"
+          # Check what's in the app directory
+          echo "=== Contents of /app in pod ==="
+          kubectl exec $POD_NAME -- find /app -type f -name "*.html" -o -name "*.json" -o -name "*.xml" 2>/dev/null || echo "No report files found"
           
-          # Try alternative locations
-          kubectl cp $POD_NAME:/app/report/ ./playwright-report/ 2>/dev/null && echo "✅ Alternative report copied" || echo "❌ Alternative report not found"
+          # Try multiple possible report locations
+          echo "=== Attempting to copy reports ==="
           
-          # List what we actually copied
-          echo "=== Contents of extracted reports ==="
-          ls -la ./playwright-report/ 2>/dev/null || echo "No reports extracted"
+          # Try playwright-report directory
+          if kubectl exec $POD_NAME -- test -d /app/playwright-report 2>/dev/null; then
+            echo "📁 Copying from /app/playwright-report/"
+            kubectl cp $POD_NAME:/app/playwright-report/ ./playwright-report/
+          fi
+          
+          # Try test-results directory
+          if kubectl exec $POD_NAME -- test -d /app/test-results 2>/dev/null; then
+            echo "📁 Copying from /app/test-results/"
+            mkdir -p test-results
+            kubectl cp $POD_NAME:/app/test-results/ ./test-results/
+          fi
+          
+          # Look for any HTML files in the root
+          echo "🔍 Searching for HTML files in /app"
+          kubectl exec $POD_NAME -- find /app -name "*.html" -exec tar cf - {} + 2>/dev/null | tar xf - -C ./playwright-report/ 2>/dev/null && echo "✅ HTML files extracted" || echo "❌ No HTML files found"
+          
+          # Copy logs as fallback
+          echo "📝 Getting pod logs as fallback"
+          kubectl logs $POD_NAME > ./playwright-report/pod-logs.txt 2>/dev/null || echo "Could not get pod logs"
+          
+          # List what we extracted
+          echo "=== Extracted files ==="
+          find ./playwright-report -type f 2>/dev/null | head -20 || echo "No files extracted"
+          
         else
-          echo "No pod found to extract reports from"
+          echo "❌ No pod found for report extraction"
+          # Create a dummy file to indicate no reports
+          mkdir -p playwright-report
+          echo "No test reports available - pod not found" > ./playwright-report/NO_REPORTS.txt
         fi
 
     - name: Upload HTML Report
@@ -121,4 +145,13 @@ jobs:
         name: playwright-html-report
         path: playwright-report/
         retention-days: 30
-        if-no-files-found: warn  # Change from error to warn if no files
+        if-no-files-found: warn
+
+    - name: Upload Test Results (if any)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: test-results/
+        retention-days: 30
+        if-no-files-found: ignore
