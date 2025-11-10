@@ -1,19 +1,20 @@
-# ✅ Use latest Playwright-supported OS with browsers preinstalled
-FROM mcr.microsoft.com/playwright:v1.56.1-jammy
+FROM mcr.microsoft.com/playwright:v1.48.0-jammy
 
-# Set working directory
+# Fix DNS to avoid timeout in Docker
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY playwright.config.ts ./
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy the remaining project files
 COPY . .
 
-# ✅ Increase shared memory for Chromium
-# Run tests by default
-CMD ["npx", "playwright", "test", "--project=chromium"]
+# Install only chromium browsers
+RUN npx playwright install chromium
+
+# Extra dependencies (fixes crashes)
+RUN apt-get update && apt-get install -y curl
+
+# Run tests ONLY on chromium
+ENTRYPOINT ["npx", "playwright", "test", "--project=chromium"]
