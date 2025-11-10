@@ -86,3 +86,19 @@ jobs:
 
     - name: Get logs
       run: kubectl logs -l job-name=playwright-tests
+    - name: Extract test reports
+      if: always()
+      run: |
+        POD_NAME=$(kubectl get pods -l job-name=playwright-tests -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "NO_POD")
+        if [ "$POD_NAME" != "NO_POD" ]; then
+          kubectl cp $POD_NAME:/app/playwright-report/ ./playwright-report/ || echo "HTML report not found"
+          kubectl cp $POD_NAME:/app/test-results/ ./test-results/ || echo "Test results not found"
+        fi
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-html-report
+        path: playwright-report/
+        retention-days: 30  
