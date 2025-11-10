@@ -363,10 +363,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   // 2) Invalid login
   test("Invalid Login - error validation", async ({ page }) => {
-    await page.goto(BASE_URL, { 
-    waitUntil: 'networkidle', // Wait for network to be idle
-    timeout: 60000 
-});
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('invalid_user');
     await page.locator('[data-test="password"]').click();
@@ -377,10 +374,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   // 3) Locked out user
   test("Locked Out User - error validation", async ({ page }) => {
-    await page.goto(BASE_URL, { 
-    waitUntil: 'networkidle', // Wait for network to be idle
-    timeout: 60000 
-});
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('locked_out_user');
     await page.locator('[data-test="password"]').click();
@@ -391,10 +385,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //4) Browse products and view details
   test("Browse products and view details", async ({ page }) => {
-    await page.goto(BASE_URL, { 
-    waitUntil: 'networkidle', // Wait for network to be idle
-    timeout: 60000 
-});
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -413,10 +404,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //5) Add single product to cart
   test("Add single product to cart", async ({ page }) => {
-    await page.goto(BASE_URL, { 
-    waitUntil: 'networkidle', // Wait for network to be idle
-    timeout: 60000 
-});
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -436,10 +424,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //6) Add multiple products to cart
   test("Add multiple products to cart", async ({ page }) => {
-    await page.goto(BASE_URL, { 
-    waitUntil: 'networkidle', // Wait for network to be idle
-    timeout: 60000 
-});
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -461,10 +446,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //7) Remove product from cart
   test("Remove product from cart", async ({ page }) => {
-    await page.goto(BASE_URL, {
-      waitUntil: 'networkidle', // Wait for network to be idle
-      timeout: 60000
-    });
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -481,10 +463,7 @@ test.describe("AutomationExercise Test Suite", () => {
   
   //8) Sort products by price low to high
   test("Sort products by price low to high", async ({ page }) => {
-    await page.goto(BASE_URL, {
-      waitUntil: 'networkidle', // Wait for network to be idle
-      timeout: 60000
-    });
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -498,10 +477,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //9) Sort products by Name (Z to A)
   test("Sort products by Name (Z to A)", async ({ page }) => {
-    await page.goto(BASE_URL, {
-      waitUntil: 'networkidle', // Wait for network to be idle
-      timeout: 60000
-    });
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -515,10 +491,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //10) Complete a purchase flow
   test("Complete a purchase flow", async ({ page }) => {
-    await page.goto(BASE_URL, {
-      waitUntil: 'networkidle', // Wait for network to be idle
-      timeout: 60000
-    });
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -543,10 +516,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //11) Checkout Form Validation
   test("Checkout Form Validation", async ({ page }) => {
-    await page.goto(BASE_URL, {
-      waitUntil: 'networkidle', // Wait for network to be idle
-      timeout: 60000
-    });
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
@@ -563,10 +533,7 @@ test.describe("AutomationExercise Test Suite", () => {
 
   //12) Logout functionality
   test("Logout functionality", async ({ page }) => {
-    await page.goto(BASE_URL, {
-      waitUntil: 'networkidle', // Wait for network to be idle
-      timeout: 60000
-    });
+    await page.goto(BASE_URL);
     await page.locator('[data-test="username"]').click();
     await page.locator('[data-test="username"]').fill('standard_user');
     await page.locator('[data-test="password"]').click();
