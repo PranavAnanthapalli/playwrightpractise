@@ -13,6 +13,6 @@ spec:
         command: ["npx", "playwright", "test", "--project=chromium,firefox"]
         resources:
           limits:
-            memory: "512Mi"
+            memory: "1Gi"
             cpu: "500m"
       restartPolicy: Never
